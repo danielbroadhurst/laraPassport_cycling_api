@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+/* Provides Login endpoint for Passport */
+Route::post('/login', 'AuthController@Login');
+Route::post('/register', 'AuthController@Register');
+Route::middleware('auth:api')->post('/logout', 'AuthController@Logout');
