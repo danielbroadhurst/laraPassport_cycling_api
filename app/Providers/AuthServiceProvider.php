@@ -29,6 +29,5 @@ class AuthServiceProvider extends ServiceProvider
         Passport::routes(function($router) {
             $router->forAccessTokens();
         });
-        Passport::loadKeysFrom('/storage/');
     }
 }
