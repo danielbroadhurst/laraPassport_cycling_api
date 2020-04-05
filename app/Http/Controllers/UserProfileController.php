@@ -24,7 +24,7 @@ class UserProfileController extends Controller
             'country' => 'required|string|max:255',
         ]);
 
-        if (!User::find($user->id)->userProfile) {
+        if (!User::where('id', $user->id)->userProfile) {
             $profile = UserProfile::create([
                 'user_id' => $user->id,
                 'gender' => $request->gender,
@@ -39,7 +39,7 @@ class UserProfileController extends Controller
             ]);
 
             if ($profile) {
-                return response()->json(User::find($user->id)->with('userProfile')->get());
+                return response()->json(User::where('id',$user->id)->with('userProfile')->get());
             } else {
                 return response()->json('Something went wrong on the server.', 400);
             }
@@ -63,7 +63,7 @@ class UserProfileController extends Controller
         }
         
         if ($userProfile->save()) {
-            return response()->json(User::find($userProfile->user_id)->with('userProfile')->get());
+            return response()->json(User::where('id', $userProfile->user_id)->with('userProfile')->get());
         } else {
             return response()->json('Something went wrong on the server.', 400);
         }

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     $user = auth()->user();
-    return User::find($user->id)->with('userProfile')->get();
+    return User::where('id',$user->id)->with('userProfile')->get();
 });
 
 /* Provides Login endpoint for Passport */
