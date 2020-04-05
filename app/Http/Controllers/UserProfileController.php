@@ -28,13 +28,13 @@ class UserProfileController extends Controller
             $profile = UserProfile::create([
                 'user_id' => $user->id,
                 'gender' => $request->gender,
-                'date_of_birth' => $request->dateOfBirth,
+                'date_of_birth' => $request->date_of_birth,
                 'town' => $request->town,
                 'region' => $request->region,
                 'country' => $request->country,
-                'current_bike' => $request->currentBike,
-                'preferred_style' => $request->preferredStyle,
-                'profile_picture' => $request->proflePicture,
+                'current_bike' => $request->current_bike,
+                'preferred_style' => $request->preferred_style,
+                'profile_picture' => $request->profile_picture,
                 'bio' => $request->bio
             ]);
 
@@ -59,23 +59,6 @@ class UserProfileController extends Controller
     public function update(Request $request, UserProfile $userProfile)
     {
         foreach ($request->request as $key => $value) {
-            switch ($key) {
-                case 'dateOfBirth':
-                    $key = 'date_of_birth';
-                    break;
-                case 'currentBike':
-                    $key = 'current_bike';
-                    break;
-                case 'preferredStyle':
-                    $key = 'preferred_style';
-                    break;
-                case 'proflePicture':
-                    $key = 'profile_picture';
-                    break;
-                default:
-                    
-                    break;
-            }
             $userProfile->$key = $value;
         }
         
