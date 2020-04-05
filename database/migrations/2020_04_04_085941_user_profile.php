@@ -16,15 +16,15 @@ class UserProfile extends Migration
         Schema::create('user_profile', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('gender');
+            $table->string('gender')->nullable();
             $table->date('date_of_birth');
-            $table->string('bio');
-            $table->string('town');
-            $table->string('region');
+            $table->string('bio')->nullable();
+            $table->string('town')->nullable();
+            $table->string('region')->nullable();
             $table->string('country');
-            $table->string('current_bike');
-            $table->string('preferred_style');
-            $table->binary('profile_picture');
+            $table->string('current_bike')->nullable();
+            $table->string('preferred_style')->nullable();
+            $table->binary('profile_picture')->nullable();
             $table->boolean('is_admin')->nullable();
             $table->timestamps();
 
