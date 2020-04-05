@@ -20,7 +20,7 @@ class UserProfileController extends Controller
         $user = auth()->user();
         
         $request->validate([
-            'dateOfBirth' => 'required|date',
+            'date_of_birth' => 'required|date',
             'country' => 'required|string|max:255',
         ]);
 
