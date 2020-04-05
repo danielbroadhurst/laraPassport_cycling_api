@@ -18,7 +18,7 @@ class AuthController extends Controller
                     'grant_type' => 'password',
                     'client_id' => config('services.passport.client_id'),
                     'client_secret' => config('services.passport.client_secret'),
-                    'username' => $request->username,
+                    'username' => $request->email,
                     'password' => $request->password
                 ]
             ]);
@@ -37,16 +37,24 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'firstName' => 'required|string|max:255',
+            'lastName' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string:min:6'
         ]);
 
-        return User::create([
-            'name' => $request->name,
+        $user = User::create([
+            'first_name' => $request->firstName,
+            'last_name' => $request->lastName,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        if ($user) {
+            return $this->login($request);
+        } else {
+            return response()->json('Something went wrong on the server.', 400);
+        }
     }
 
     public function logout()
@@ -56,5 +64,12 @@ class AuthController extends Controller
         });
 
         return response()->json('Logged out successfully', 200);
+    }
+
+    // TODO - DELETE USER PROFILE
+    public function deleteAccount(User $user)
+    {
+        $user = User::find($user->id)->delete();
+        return response()->json('Deleted account successfully', 200);
     }
 }
