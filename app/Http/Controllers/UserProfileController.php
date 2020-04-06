@@ -25,7 +25,7 @@ class UserProfileController extends Controller
         ]);
 
         if (!User::where('id', $user->id)->userProfile) {
-            $profile = UserProfile::create([
+            dd($profile = UserProfile::create([
                 'user_id' => $user->id,
                 'gender' => $request->gender,
                 'date_of_birth' => $request->date_of_birth,
@@ -36,7 +36,7 @@ class UserProfileController extends Controller
                 'preferred_style' => $request->preferred_style,
                 'profile_picture' => $request->profile_picture,
                 'bio' => $request->bio
-            ]);
+            ]));
 
             if ($profile) {
                 return response()->json(User::where('id',$user->id)->with('userProfile')->get());
