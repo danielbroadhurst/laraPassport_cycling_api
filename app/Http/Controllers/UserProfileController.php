@@ -24,8 +24,12 @@ class UserProfileController extends Controller
             'country' => 'required|string|max:255',
         ]);
 
-        if (!User::where('id', $user->id)->userProfile) {
-            dd($profile = UserProfile::create([
+        if (!$user->userProfile) {
+            if ($request->profile_picture) {
+                $profilePicture = $this->saveProfilePicture($request->profile_picture, $user->id, $user->email);
+            }
+            dd();
+            $profile = UserProfile::create([
                 'user_id' => $user->id,
                 'gender' => $request->gender,
                 'date_of_birth' => $request->date_of_birth,
@@ -34,12 +38,12 @@ class UserProfileController extends Controller
                 'country' => $request->country,
                 'current_bike' => $request->current_bike,
                 'preferred_style' => $request->preferred_style,
-                'profile_picture' => $request->profile_picture,
+                'profile_picture' => $profilePicture,
                 'bio' => $request->bio
-            ]));
-
+            ]);
+                dd($user->userProfile);
             if ($profile) {
-                return response()->json(User::where('id',$user->id)->with('userProfile')->get());
+                return response()->json(User::where('id', $user->id)->with('userProfile')->get());
             } else {
                 return response()->json('Something went wrong on the server.', 400);
             }
@@ -58,7 +62,13 @@ class UserProfileController extends Controller
      */
     public function update(Request $request, UserProfile $userProfile)
     {
+        if ($request->profile_picture) {
+            $profilePicture = $this->saveProfilePicture($request->profile_picture, auth()->user()->id, auth()->user()->email);
+        }
         foreach ($request->request as $key => $value) {
+            if ($key === 'profile_picture') {
+                $value = $profilePicture;
+            }
             $userProfile->$key = $value;
         }
         
@@ -80,5 +90,35 @@ class UserProfileController extends Controller
     public function destroy(UserProfile $userProfile)
     {
         //
+    }
+
+    public function saveProfilePicture($picture, $id, $email)
+    {
+        try {
+            $dir = "uploads";
+            if( is_dir($dir) === false )
+            {
+                mkdir($dir);
+            }
+            if( is_dir($id) === false )
+            {
+                mkdir($id);
+            }
+            list($mime, $data)   = explode(';', $picture);
+            list(, $data)       = explode(',', $data);
+            $data = base64_decode($data);
+
+            $mime = explode(':',$mime)[1];
+            $ext = explode('/',$mime)[1];
+            $name = mt_rand().time();
+            
+            $savePath = 'uploads/'. $id . '/' . $email . '.' . $ext;
+
+            file_put_contents(public_path().'/'.$savePath, $data);
+            
+            return '/'.$savePath;
+        } catch (\Exception $e) {
+            dd($e);
+        }
     }
 }
