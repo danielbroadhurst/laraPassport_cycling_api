@@ -28,7 +28,7 @@ class UserProfileController extends Controller
             if ($request->profile_picture) {
                 $profilePicture = $this->saveProfilePicture($request->profile_picture, $user->id, $user->email);
             }
-            dd();
+            
             $profile = UserProfile::create([
                 'user_id' => $user->id,
                 'gender' => $request->gender,
@@ -41,9 +41,9 @@ class UserProfileController extends Controller
                 'profile_picture' => $profilePicture,
                 'bio' => $request->bio
             ]);
-                dd($user->userProfile);
+
             if ($profile) {
-                return response()->json(User::where('id', $user->id)->with('userProfile')->get());
+                return response()->json(User::where('id', $user->id)->with('userProfile')->get(), 201);
             } else {
                 return response()->json('Something went wrong on the server.', 400);
             }
@@ -77,8 +77,6 @@ class UserProfileController extends Controller
         } else {
             return response()->json('Something went wrong on the server.', 400);
         }
-        dd($userProfile);
-
     }
 
     /**
@@ -92,7 +90,7 @@ class UserProfileController extends Controller
         //
     }
 
-    public function saveProfilePicture($picture, $id, $email)
+    public function saveProfilePicture($picture, $id)
     {
         try {
             $dir = "uploads";
@@ -100,21 +98,20 @@ class UserProfileController extends Controller
             {
                 mkdir($dir);
             }
-            if( is_dir($id) === false )
+            if( is_dir($dir.'/'.$id) === false )
             {
-                mkdir($id);
+                mkdir($dir.'/'.$id);
             }
-            list($mime, $data)   = explode(';', $picture);
+/*             list($mime, $data)   = explode(';', $picture);
             list(, $data)       = explode(',', $data);
             $data = base64_decode($data);
-
             $mime = explode(':',$mime)[1];
             $ext = explode('/',$mime)[1];
-            $name = mt_rand().time();
+            $name = mt_rand().time(); */
             
-            $savePath = 'uploads/'. $id . '/' . $email . '.' . $ext;
+            $savePath = 'uploads/'. $id . '/' . $picture->name;
 
-            file_put_contents(public_path().'/'.$savePath, $data);
+            file_put_contents(public_path().'/'.$savePath, $picture);
             
             return '/'.$savePath;
         } catch (\Exception $e) {
