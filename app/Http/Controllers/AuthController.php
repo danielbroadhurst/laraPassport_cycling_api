@@ -11,7 +11,6 @@ class AuthController extends Controller
     public function login(Request $request)
     {   
         $http = new \GuzzleHttp\Client;
-
         try {
             $response = $http->post(config('services.passport.login_endpoint'), [
                 'form_params' => [
@@ -22,7 +21,6 @@ class AuthController extends Controller
                     'password' => $request->password
                 ]
             ]);
-            
             return json_decode($response->getBody(), true);
         } catch (\GuzzleHttp\Exception\BadResponseException $e) {
             if ($e->getCode() === 400) {
@@ -51,7 +49,7 @@ class AuthController extends Controller
         ]);
 
         if ($user) {
-            return $this->login($request);
+            return response()->json($user, 201);
         } else {
             return response()->json('Something went wrong on the server.', 400);
         }
@@ -66,7 +64,6 @@ class AuthController extends Controller
         return response()->json('Logged out successfully', 200);
     }
 
-    // TODO - DELETE USER PROFILE
     public function deleteAccount(User $user)
     {
         $user = User::find($user->id)->delete();
