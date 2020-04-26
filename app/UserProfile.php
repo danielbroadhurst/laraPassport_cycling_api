@@ -26,7 +26,7 @@ class UserProfile extends Model
      * @var array
      */
     protected $hidden = [
-        'id','user_id', 'is_admin', 'created_at', 'updated_at'
+        'id',' user_id', 'is_admin', 'created_at', 'updated_at'
     ];
 
     /**
