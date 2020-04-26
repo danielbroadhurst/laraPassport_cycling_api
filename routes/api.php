@@ -15,9 +15,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth:api')->get('/user', function () {
     $user = auth()->user();
-    return User::where('id',$user->id)->with('userProfile')->get();
+    return response()->json(User::where('id',$user->id)->with('userProfile')->get());
+});
+Route::middleware('auth:api')->get('/user/{user}', function (User $user = null) {
+    return response()->json(User::where('id',$user->id)->with('userProfile')->get());
 });
 
 /* Provides Login endpoint for Passport */
@@ -27,7 +30,7 @@ Route::middleware('auth:api')->post('/logout', 'AuthController@Logout');
 Route::middleware('auth:api')->delete('/delete-account/{user}', 'AuthController@DeleteAccount');
 /* User Profile Group */
 Route::middleware('auth:api')->group(function () {
-    Route::resource('userProfile', 'UserProfileController')->only([
+    Route::resource('user-profile', 'UserProfileController')->only([
         'store', 'update'
     ]);
 });
