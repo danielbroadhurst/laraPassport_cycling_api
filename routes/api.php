@@ -15,10 +15,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function () {
-    $user = auth()->user();
-    return response()->json(User::where('id',$user->id)->with('userProfile')->get());
-});
 Route::middleware('auth:api')->get('/user/{user}', function (User $user = null) {
     return response()->json(User::where('id',$user->id)->with('userProfile')->get());
 });
@@ -28,9 +24,25 @@ Route::post('/login', 'AuthController@Login');
 Route::post('/register', 'AuthController@Register');
 Route::middleware('auth:api')->post('/logout', 'AuthController@Logout');
 Route::middleware('auth:api')->delete('/delete-account/{user}', 'AuthController@DeleteAccount');
+
+/* View User with Clubs and Club Admin */
+Route::middleware('auth:api')->get('/user', 'UserController@index');
+/* User Join & Leave Club */
+Route::middleware('auth:api')->post('/join-cycling-club/{cyclingClub}', 'CyclingClubController@joinCyclingClub');
+Route::middleware('auth:api')->post('/leave-cycling-club/{cyclingClub}', 'CyclingClubController@leaveCyclingClub');
+
 /* User Profile Group */
 Route::middleware('auth:api')->group(function () {
     Route::resource('user-profile', 'UserProfileController')->only([
         'store', 'update'
     ]);
+    Route::resource('cycling-club', 'CyclingClubController')->only([
+        'store', 'update', 'index', 'destroy'
+    ]);
+    Route::get('/countries', 'CountriesController@Index');
+});
+
+Route::fallback(function(){
+    return response()->json([
+        'message' => 'Page Not Found. If error persists, contact info@website.com'], 404);
 });
