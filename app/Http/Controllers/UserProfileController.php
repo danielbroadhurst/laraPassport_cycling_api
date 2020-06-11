@@ -38,12 +38,12 @@ class UserProfileController extends Controller
                 'country' => $request->country,
                 'current_bike' => $request->current_bike,
                 'preferred_style' => $request->preferred_style,
-                'profile_picture' => $profilePicture,
+                'profile_picture' => $user->profilePicture ? $profilePicture : null,
                 'bio' => $request->bio
             ]);
 
             if ($profile) {
-                return response()->json(User::where('id', $user->id)->with('userProfile')->get(), 201);
+                return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->get(), 201);
             } else {
                 return response()->json('Something went wrong on the server.', 400);
             }
@@ -62,8 +62,10 @@ class UserProfileController extends Controller
      */
     public function update(Request $request, UserProfile $userProfile)
     {
+        $user = auth()->user();
+        $profilePicture = null;
         if ($request->profile_picture) {
-            $profilePicture = $this->saveProfilePicture($request->profile_picture, auth()->user()->id, auth()->user()->email);
+            $profilePicture = $this->saveProfilePicture($request->profile_picture, $user->id, $user->email);
         }
         foreach ($request->request as $key => $value) {
             if ($key === 'profile_picture') {
@@ -73,7 +75,7 @@ class UserProfileController extends Controller
         }
         
         if ($userProfile->save()) {
-            return response()->json(User::where('id', $userProfile->user_id)->with('userProfile')->get());
+            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->get(), 202);
         } else {
             return response()->json('Something went wrong on the server.', 400);
         }
