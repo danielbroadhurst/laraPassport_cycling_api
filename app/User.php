@@ -41,4 +41,20 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\UserProfile');
     }
+
+    /**
+     * User is an Admin of Cycling Club
+     */
+    public function cyclingClubAdmin()
+    {
+        return $this->hasMany('App\CyclingClub');
+    }
+
+    /**
+     * User is an Member of Cycling Club
+     */
+    public function cyclingClubs()
+    {
+        return $this->belongsToMany('App\CyclingClub', 'user_cycling_club')->withTimestamps();
+    }
 }
