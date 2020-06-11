@@ -43,7 +43,7 @@ class RegisterUserTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client(['handler' => $handlerStack]);
 
-        $response = $client->request('POST', '/api/login', ['email' => 'dj@enail.com', 'password' => 'password']);
+        $response = $client->request('POST', '/api/login', ['email' => 'dj@email.com', 'password' => 'password']);
         $this->assertEquals(200, $response->getStatusCode());
     }
 
