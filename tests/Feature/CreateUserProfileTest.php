@@ -62,7 +62,7 @@ class CreateUserProfileTest extends TestCase
         );
         $response = $this->put('api/user-profile/'.$user->id, $updatedData);
         $response
-        ->assertStatus(200)
+        ->assertStatus(202)
         ->assertJsonFragment($updatedData);
     }
 
