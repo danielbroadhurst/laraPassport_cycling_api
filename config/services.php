@@ -33,5 +33,10 @@ return [
         'login_endpoint' => env('PASSPORT_LOGIN_ENDPOINT'),
         'client_id' => env('PASSPORT_CLIENT_ID'),
         'client_secret' => env('PASPORRT_CLIENT_SECRET')
+    ],
+    'here' => [
+        'app_id' => env('HERE_APP_ID'),
+        'app_code' => env('HERE_APP_CODE'),
+        'geocode_endpoint' => 'https://geocoder.cit.api.here.com/6.2/geocode.json'
     ]
 ];
