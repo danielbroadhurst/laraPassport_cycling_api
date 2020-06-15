@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('/images', 'ImageController@upload');
+
 Route::middleware('auth:api')->get('/user/{user}', function (User $user = null) {
     return response()->json(User::where('id',$user->id)->with('userProfile')->get());
 });
