@@ -7,6 +7,7 @@ class ImageController extends Controller
 {
     public function upload(Request $request)
     {
-        dd($request->file());
+        $file = $request->file('image')->store('public'); 
+        return $file;
     }
 }
