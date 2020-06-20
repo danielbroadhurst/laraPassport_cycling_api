@@ -9,7 +9,7 @@ class Maps
         try {
             $response = $http->get(config('services.here.geocode_endpoint'), [
                 'query' => [
-                    'searchtext' => "$query->town $query->country",
+                    'searchtext' => "$query->city $query->country",
                     'app_id' => config('services.here.app_id'),
                     'app_code' => config('services.here.app_code'),
                     'gen' => 8
@@ -17,8 +17,8 @@ class Maps
             ]);
             $response = $response->getBody()->getContents();
             $country = strpos($response, $query->country);
-            $town = strpos($response, $query->town);
-            if ($country > 0 && $town > 0) {
+            $city = strpos($response, $query->city);
+            if ($country > 0 && $city > 0) {
                 $json = json_decode($response);
                 $location = $json->Response->View[0]->Result[0]->Location;
                 return $location;
