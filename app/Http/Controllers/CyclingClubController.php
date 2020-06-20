@@ -9,9 +9,17 @@ use Illuminate\Http\Request;
 
 class CyclingClubController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $clubs = CyclingClub::all();
+        if ($request->has('id')) {
+            $clubs = CyclingClub::where('id', $request->input('id'))->get();
+        }
+        elseif ($request->has('county')) {
+            $clubs = CyclingClub::where('county', $request->input('county'))->get();
+        } else {
+            $clubs = CyclingClub::get();
+        }
+        
         return response()->json($clubs, 200);
     }
     /**
@@ -35,7 +43,7 @@ class CyclingClubController extends Controller
         
         $request->validate([
             'club_name' => 'required|string|max:255',
-            'town' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
             'country' => 'required|string|max:255',
         ]);
 
@@ -53,7 +61,7 @@ class CyclingClubController extends Controller
         }
 
         $mapsQuery = (object) array(
-            'town' => $request->town,
+            'city' => $request->city,
             'country' => $request->country
         );
         $searchMap = new Maps();
@@ -63,9 +71,10 @@ class CyclingClubController extends Controller
             'user_id' => $user->id,
             'club_name' => $request->club_name,
             'bio' => $request->bio,
-            'town' => $request->town,
-            'region' => $request->region,
+            'city' => $request->city,
+            'county' => $mapResult ? $mapResult->Address->County : null,
             'country' => $request->country,
+            'country_short' => $mapResult ? $mapResult->Address->Country : null,
             'lat' => $mapResult ? $mapResult->NavigationPosition[0]->Latitude : null,
             'lng' => $mapResult ? $mapResult->NavigationPosition[0]->Longitude : null,
             'preferred_style' => $request->preferred_style,
@@ -119,7 +128,7 @@ class CyclingClubController extends Controller
             if ($key === 'profile_picture') {
                 $value = $profilePicture;
             }
-            if ($key == 'town' or $key == 'country') {
+            if ($key == 'city' or $key == 'country') {
                 $refreshLatLng = true;
             }
             $cyclingClub->$key = $value;
@@ -127,7 +136,7 @@ class CyclingClubController extends Controller
 
         if ($refreshLatLng) {
             $mapsQuery = (object) array(
-                'town' => $request->town ? $request->town : $cyclingClub->town,
+                'city' => $request->city ? $request->city : $cyclingClub->city,
                 'country' => $request->country ? $request->country : $cyclingClub->country
             );
             $searchMap = new Maps();

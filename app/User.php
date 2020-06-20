@@ -26,7 +26,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'created_at', 'updated_at'
+        'password', 'created_at', 'updated_at', 'pivot'
     ];
 
     /**
@@ -53,7 +53,7 @@ class User extends Authenticatable
     /**
      * User is an Member of Cycling Club
      */
-    public function cyclingClubs()
+    public function cyclingClubMember()
     {
         return $this->belongsToMany('App\CyclingClub', 'user_cycling_club')->withTimestamps();
     }

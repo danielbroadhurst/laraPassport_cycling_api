@@ -17,7 +17,7 @@ class CyclingClub extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'club_name', 'bio', 'town', 'region', 'country', 'lng', 'lat', 'preferred_style', 'profile_picture'
+        'user_id', 'club_name', 'bio', 'city', 'county', 'country', 'country_short', 'lng', 'lat', 'preferred_style', 'profile_picture'
     ];
 
     /**
@@ -26,7 +26,7 @@ class CyclingClub extends Model
      * @var array
      */
     protected $hidden = [
-        'user_id', 'created_at', 'updated_at', 'is_active'
+        'user_id', 'created_at', 'updated_at', 'is_active', 'pivot'
     ];
 
     /**

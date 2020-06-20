@@ -11,7 +11,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         if ($user->userProfile && $user) {
-            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->get());
+            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get());
         } else {
             return response()->json(User::where('id', $user->id)->with('userProfile')->get());
         }

@@ -43,7 +43,7 @@ class UserProfileController extends Controller
             ]);
 
             if ($profile) {
-                return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->get(), 201);
+                return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get(), 201);
             } else {
                 return response()->json('Something went wrong on the server.', 400);
             }
@@ -75,7 +75,7 @@ class UserProfileController extends Controller
         }
         
         if ($userProfile->save()) {
-            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->get(), 202);
+            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get(), 202);
         } else {
             return response()->json('Something went wrong on the server.', 400);
         }

@@ -18,9 +18,10 @@ class CyclingClub extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('club_name')->unique();
             $table->string('bio')->nullable();
-            $table->string('town');
-            $table->string('region')->nullable();
+            $table->string('city');
+            $table->string('county')->nullable();
             $table->string('country');
+            $table->string('country_short');
             $table->string('lat')->nullable();
             $table->string('lng')->nullable();
             $table->string('preferred_style')->nullable();
