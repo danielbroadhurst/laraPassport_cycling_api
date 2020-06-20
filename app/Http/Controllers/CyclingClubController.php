@@ -114,13 +114,17 @@ class CyclingClubController extends Controller
             return response()->json($error, 400);
         }
         $nameCheck = CyclingClub::where('club_name', $request->club_name)->get()->first();
-        if ($nameCheck->id !== $cyclingClub->id) {
-            $errorMessage = 'The club `' . $nameCheck->club_name . '` already exists.';
-            $error = array(
-                'message' => $errorMessage
-            );
-            return response()->json($error, 400);
+
+        if ($nameCheck !== null) {
+            if ($nameCheck->id !== $cyclingClub->id) {
+                $errorMessage = 'The club `' . $nameCheck->club_name . '` already exists.';
+                $error = array(
+                    'message' => $errorMessage
+                );
+                return response()->json($error, 400);
+            }
         }
+
         if ($request->profile_picture) {
             $profilePicture = $this->saveProfilePicture($request->profile_picture, auth()->user()->id, $cyclingClub->club_name);
         }
@@ -234,7 +238,7 @@ class CyclingClubController extends Controller
     public function saveProfilePicture($picture, $id)
     {
         try {
-            $dir = "uploads";
+            $dir = "club_profiles";
             if( is_dir($dir) === false )
             {
                 mkdir($dir);
@@ -243,16 +247,16 @@ class CyclingClubController extends Controller
             {
                 mkdir($dir.'/'.$id);
             }
-/*             list($mime, $data)   = explode(';', $picture);
+            list($mime, $data)   = explode(';', $picture);
             list(, $data)       = explode(',', $data);
             $data = base64_decode($data);
             $mime = explode(':',$mime)[1];
             $ext = explode('/',$mime)[1];
-            $name = mt_rand().time(); */
+            $name = mt_rand().time();
             
-            $savePath = 'uploads/'. $id . '/' . $picture->name;
+            $savePath = $dir. '/'. $id . '/' . $name . '.' . $ext;
 
-            file_put_contents(public_path().'/'.$savePath, $picture);
+            file_put_contents(public_path().'/'.$savePath, $data);
             
             return '/'.$savePath;
         } catch (\Exception $e) {
