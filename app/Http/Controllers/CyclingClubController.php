@@ -67,7 +67,7 @@ class CyclingClubController extends Controller
         }
 
         if ($request->profile_picture) {
-            $profilePicture = $this->saveProfilePicture($request->profile_picture, $user->id, $request->club_name);
+            $profilePicture = $this->saveProfilePicture($request->profile_picture, auth()->user()->id, $request->club_name);
         }
 
         $mapsQuery = (object) array(
@@ -88,7 +88,7 @@ class CyclingClubController extends Controller
             'lat' => $mapResult ? $mapResult->NavigationPosition[0]->Latitude : null,
             'lng' => $mapResult ? $mapResult->NavigationPosition[0]->Longitude : null,
             'preferred_style' => $request->preferred_style,
-            'profile_picture' => $user->profilePicture ? $profilePicture : null,
+            'profile_picture' => $profilePicture ? $profilePicture : null,
             'is_active' => true,
         ]);
 
@@ -136,7 +136,7 @@ class CyclingClubController extends Controller
         }
 
         if ($request->profile_picture) {
-            $profilePicture = $this->saveProfilePicture($request->profile_picture, auth()->user()->id, $cyclingClub->club_name);
+            $profilePicture = $this->saveProfilePicture($request->profile_picture, auth()->user()->id);
         }
         foreach ($request->request as $key => $value) {
             if ($key === 'profile_picture') {

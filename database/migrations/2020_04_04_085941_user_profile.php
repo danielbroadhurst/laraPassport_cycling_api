@@ -24,7 +24,7 @@ class UserProfile extends Migration
             $table->string('country');
             $table->string('current_bike')->nullable();
             $table->string('preferred_style')->nullable();
-            $table->binary('profile_picture')->nullable();
+            $table->string('profile_picture')->nullable();
             $table->boolean('is_admin')->nullable();
             $table->timestamps();
 

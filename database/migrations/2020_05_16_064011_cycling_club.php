@@ -25,7 +25,7 @@ class CyclingClub extends Migration
             $table->string('lat')->nullable();
             $table->string('lng')->nullable();
             $table->string('preferred_style')->nullable();
-            $table->binary('profile_picture')->nullable();
+            $table->string('profile_picture')->nullable();
             $table->boolean('is_active')->nullable();
             $table->timestamps();
 
