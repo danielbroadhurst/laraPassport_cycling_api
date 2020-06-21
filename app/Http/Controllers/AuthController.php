@@ -66,7 +66,19 @@ class AuthController extends Controller
 
     public function deleteAccount(User $user)
     {
-        $user = User::find($user->id)->delete();
-        return response()->json('Deleted account successfully', 200);
+        $loggedUser = auth()->user();
+        $user = User::where('id', $user->id)->first();
+        if ($loggedUser->id === $user->id) {
+            $user->delete();
+        } else {
+            $message = array(
+                'message' => 'Unauthorised to delete that account.'
+            );
+            return response()->json($message, 400);
+        }
+        $message = array(
+            'message' => 'Deleted account successfully.'
+        );
+        return response()->json($message, 200);
     }
 }

@@ -13,13 +13,23 @@ class CyclingClubController extends Controller
     {
         if ($request->has('id')) {
             $clubs = CyclingClub::where('id', $request->input('id'))->get();
-        }
-        elseif ($request->has('county')) {
+        } elseif ($request->has('county')) {
             $clubs = CyclingClub::where('county', $request->input('county'))->get();
+        } elseif ($request->has('search')) {
+            $query = $request->input('search');
+            $clubs = CyclingClub::where('club_name', 'like', "%".$query."%")->pluck('club_name', 'id');
+            $response = [];
+            foreach ($clubs as $key => $value) {
+                $tempClub = array(
+                    'id' => $key,
+                    'club_name' => $value
+                );
+                array_push($response, $tempClub);
+            }
+            $clubs = $response;
         } else {
             $clubs = CyclingClub::get();
         }
-        
         return response()->json($clubs, 200);
     }
     /**
