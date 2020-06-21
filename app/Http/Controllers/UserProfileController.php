@@ -101,7 +101,7 @@ class UserProfileController extends Controller
 
             file_put_contents(public_path().'/'.$savePath, $data);
             
-            return '/'.$savePath;
+            return $savePath;
         } catch (\Exception $e) {
             dd($e);
         }

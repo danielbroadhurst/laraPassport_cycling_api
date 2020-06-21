@@ -85,7 +85,7 @@ class CyclingClubController extends Controller
         if ($cyclingClub) {
             $user->userProfile->is_admin = true;
             $user->userProfile->save();
-            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->get(), 201);
+            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get(), 201);
         } else {
             return response()->json('Something went wrong on the server.', 400);
         }
@@ -150,7 +150,7 @@ class CyclingClubController extends Controller
         }
 
         if ($cyclingClub->save()) {
-            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->get(), 202);
+            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get(), 202);
         } else {
             return response()->json('Something went wrong on the server.', 400);
         }
@@ -180,12 +180,13 @@ class CyclingClubController extends Controller
             return response()->json($error, 400);
         }
         $cyclingClub = CyclingClub::find($cyclingClub->id)->delete();
-        return response()->json(User::where('id', $user->id)->with('cyclingClubAdmin')->get(), 202);
+        return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get(), 202);
     }
 
     public function joinCyclingClub(CyclingClub $cyclingClub)
     {
         $user = auth()->user();
+
         if (!$user->userProfile) {
             $errorMessage = 'You must create a User Profile before creating a Cycling Club.';
             $error = array(
@@ -193,7 +194,7 @@ class CyclingClubController extends Controller
             );
             return response()->json($error, 400);
         }
-        $clubs = User::find($user->id)->cyclingClubs()->orderBy('cycling_club_id')->get()->first();
+        $clubs = User::find($user->id)->cyclingClubMember()->where('cycling_club_id', $cyclingClub->id)->orderBy('cycling_club_id')->get()->first();
 
         if ($clubs) {
             $errorMessage = 'You are already a member of this Cycling Club.';
@@ -203,8 +204,8 @@ class CyclingClubController extends Controller
             return response()->json($error, 400);
         }
 
-        if ($user->cyclingClubs()->attach($cyclingClub) === null) {
-            return response()->json($cyclingClub, 202);
+        if ($user->cyclingClubMember()->attach($cyclingClub) === null) {
+            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get(), 202);
         } else {
             return response()->json('Something went wrong on the server.', 400);
         }
@@ -220,7 +221,7 @@ class CyclingClubController extends Controller
             );
             return response()->json($error, 400);
         }
-        $clubs = User::find($user->id)->cyclingClubs()->orderBy('cycling_club_id')->get()->first();
+        $clubs = User::find($user->id)->cyclingClubMember()->where('cycling_club_id', $cyclingClub->id)->orderBy('cycling_club_id')->get()->first();
         if (!$clubs) {
             $errorMessage = 'You aren\'t a member of this Cycling Club.';
             $error = array(
@@ -228,8 +229,9 @@ class CyclingClubController extends Controller
             );
             return response()->json($error, 400);
         }
-        if ($user->cyclingClubs()->detach($cyclingClub) === 1) {
-            return response()->json($cyclingClub, 202);
+        if ($user->cyclingClubMember()->detach($cyclingClub) === 1) {
+            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get(), 202);
+
         } else {
             return response()->json('Something went wrong on the server.', 400);
         }
@@ -258,7 +260,7 @@ class CyclingClubController extends Controller
 
             file_put_contents(public_path().'/'.$savePath, $data);
             
-            return '/'.$savePath;
+            return $savePath;
         } catch (\Exception $e) {
             dd($e);
         }
