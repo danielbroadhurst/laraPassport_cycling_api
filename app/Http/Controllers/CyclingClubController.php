@@ -33,7 +33,9 @@ class CyclingClubController extends Controller
         return response()->json($clubs, 200);
     }
     /**
-     * Store a newly created resource in storage.
+     * Store a cycling club and profile in database.
+     * Calls Geocoder API and retrieves location information.
+     * Required fields are club_name, city, country.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -41,8 +43,17 @@ class CyclingClubController extends Controller
     public function store(Request $request)
     {
 
+        // Required Fields
+        $request->validate([
+            'club_name' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+        ]);
+
+        // Get the authenticated user.
         $user = auth()->user();
 
+        // Check user has created a profile.
         if (!$user->userProfile) {
             $errorMessage = 'You must create a User Profile before creating a Cycling Club.';
             $error = array(
@@ -50,13 +61,8 @@ class CyclingClubController extends Controller
             );
             return response()->json($error, 400);
         }
-        
-        $request->validate([
-            'club_name' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-        ]);
 
+        // Check if Club Name already exists
         if (sizeof(CyclingClub::where('club_name', $request->club_name)->get()) > 0) {
             $club = CyclingClub::where('club_name', $request->club_name)->get()->first();
             $errorMessage = 'The club `' . $club->club_name . '` already exists.';
@@ -66,10 +72,12 @@ class CyclingClubController extends Controller
             return response()->json($error, 400);
         }
 
+        // Store Profile Picture if present on request.
         if ($request->profile_picture) {
             $profilePicture = $this->saveProfilePicture($request->profile_picture, auth()->user()->id, $request->club_name);
         }
 
+        // Use searchMaps to get location data
         $mapsQuery = (object) array(
             'city' => $request->city,
             'country' => $request->country
@@ -77,6 +85,7 @@ class CyclingClubController extends Controller
         $searchMap = new Maps();
         $mapResult = $searchMap->searchMaps($mapsQuery);
 
+        // Store the cycling club in the database with the additional County Country Code, Latitude, Longitude data.
         $cyclingClub = CyclingClub::create([
             'user_id' => $user->id,
             'club_name' => $request->club_name,
@@ -92,6 +101,7 @@ class CyclingClubController extends Controller
             'is_active' => true,
         ]);
 
+        // If successful, set user account to an admin account and return the users details else error.
         if ($cyclingClub) {
             $user->userProfile->is_admin = true;
             $user->userProfile->save();
@@ -272,7 +282,7 @@ class CyclingClubController extends Controller
             
             return $savePath;
         } catch (\Exception $e) {
-            dd($e);
+            return $e->getMessage();
         }
     }
 }
