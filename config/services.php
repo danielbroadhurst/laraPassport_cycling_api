@@ -35,8 +35,7 @@ return [
         'client_secret' => env('PASPORRT_CLIENT_SECRET')
     ],
     'here' => [
-        'app_id' => env('HERE_APP_ID'),
-        'app_code' => env('HERE_APP_CODE'),
-        'geocode_endpoint' => 'https://geocoder.cit.api.here.com/6.2/geocode.json'
+        'api_key' => env('HERE_API_KEY'),
+        'geocode_endpoint' => 'https://geocoder.ls.hereapi.com/search/6.2/geocode.json'
     ]
 ];
