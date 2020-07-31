@@ -72,7 +72,7 @@ class ClubEventController extends Controller
         }
         // Check User is Admin of Club
         if ($user->id != $cyclingClub->user_id) {
-            $errorMessage = 'You must be the Club Admin to Edit a Cycling Club.';
+            $errorMessage = 'You must be the Club Admin to create a Club Event.';
             $error = array(
                 'message' => $errorMessage
             );
@@ -166,7 +166,7 @@ class ClubEventController extends Controller
             return response()->json($error, 400);
         }
         if ($user->id !== $clubEvent->cyclingClub->user_id) {
-            $errorMessage = 'You must be the Club Admin to Edit a Cycling Club Event.';
+            $errorMessage = 'You must be the Club Admin to edit a Club Event.';
             $error = array(
                 'message' => $errorMessage
             );
@@ -229,7 +229,7 @@ class ClubEventController extends Controller
             return response()->json($error, 400);
         }
         if ($user->id !== $clubEvent->cyclingClub->user_id) {
-            $errorMessage = 'You must be the Club Admin to Edit a Cycling Club Event.';
+            $errorMessage = 'You must be the Club Admin to delete a Club Event.';
             $error = array(
                 'message' => $errorMessage
             );
