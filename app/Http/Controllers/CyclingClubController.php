@@ -168,6 +168,9 @@ class CyclingClubController extends Controller
             if ($key == 'city' or $key == 'country') {
                 $refreshLatLng = true;
             }
+            if ($key == 'events') {
+                continue;
+            }
             $cyclingClub->$key = $value;
         }
 
