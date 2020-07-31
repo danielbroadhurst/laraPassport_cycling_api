@@ -32,14 +32,18 @@ Route::middleware('auth:api')->get('/user', 'UserController@index');
 /* User Join & Leave Club */
 Route::middleware('auth:api')->post('/join-cycling-club/{cyclingClub}', 'CyclingClubController@joinCyclingClub');
 Route::middleware('auth:api')->post('/leave-cycling-club/{cyclingClub}', 'CyclingClubController@leaveCyclingClub');
+/* User Join & Leave Club Event */
+Route::middleware('auth:api')->post('/attend-club-event/{id}', 'ClubEventController@attendClubEvent');
+Route::middleware('auth:api')->post('/leave-club-event/{id}', 'ClubEventController@leaveClubEvent');
 
 /* User Profile Group */
 Route::middleware('auth:api')->group(function () {
     Route::resource('user-profile', 'UserProfileController')->only([
         'store', 'update'
     ]);
-    Route::resource('cycling-club', 'CyclingClubController')->only([
-        'store', 'update', 'index', 'destroy'
+    Route::apiResources([
+        'events' => 'ClubEventController',
+        'cycling-club' => 'CyclingClubController'
     ]);
     Route::get('/countries', 'CountriesController@Index');
 });

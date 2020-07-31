@@ -37,6 +37,14 @@ class CyclingClub extends Model
         return $this->belongsTo('App\User');
     }
 
+    /**
+     * Cycling Club has events
+     */
+    public function cyclingClubEvent()
+    {
+        return $this->hasMany('App\ClubEvent');
+    }
+
     public function users()
     {
         return $this->belongsToMany('App\User', 'user_cycling_club')->withTimestamps();

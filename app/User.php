@@ -57,4 +57,12 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\CyclingClub', 'user_cycling_club')->withTimestamps();
     }
+
+    /**
+     * User is an Member of Cycling Club
+     */
+    public function clubEventAttendee()
+    {
+        return $this->belongsToMany('App\ClubEvent', 'user_club_event')->withTimestamps();
+    }
 }
