@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\User;
 use App\CyclingClub;
 use App\Helpers\Maps;
+use App\Http\Resources\CyclingClub as ResourcesCyclingClub;
+use App\Http\Resources\User as ResourcesUser;
 use Illuminate\Http\Request;
 
 class CyclingClubController extends Controller
@@ -105,11 +107,22 @@ class CyclingClubController extends Controller
         if ($cyclingClub) {
             $user->userProfile->is_admin = true;
             $user->userProfile->save();
-            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get(), 201);
+            return response()->json(new ResourcesUser($user), 201);
         } else {
             return response()->json('Something went wrong on the server.', 400);
         }
 
+    }
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $club = CyclingClub::find($id);
+        return response()->json(new ResourcesCyclingClub($club));        
     }
 
     /**
@@ -170,7 +183,7 @@ class CyclingClubController extends Controller
         }
 
         if ($cyclingClub->save()) {
-            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get(), 202);
+            return response()->json(new ResourcesUser($user), 202);
         } else {
             return response()->json('Something went wrong on the server.', 400);
         }
@@ -184,7 +197,7 @@ class CyclingClubController extends Controller
      */
     public function destroy(CyclingClub $cyclingClub)
     {
-            $user = auth()->user();
+        $user = auth()->user();
         if ($user->id !== $cyclingClub->user_id) {
             $errorMessage = 'You must be the Club Admin to Edit a Cycling Club.';
             $error = array(
@@ -200,7 +213,7 @@ class CyclingClubController extends Controller
             return response()->json($error, 400);
         }
         $cyclingClub = CyclingClub::find($cyclingClub->id)->delete();
-        return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get(), 202);
+        return response()->json(new ResourcesUser($user), 202);
     }
 
     public function joinCyclingClub(CyclingClub $cyclingClub)
@@ -225,7 +238,7 @@ class CyclingClubController extends Controller
         }
 
         if ($user->cyclingClubMember()->attach($cyclingClub) === null) {
-            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get(), 202);
+            return response()->json(new ResourcesUser($user), 202);
         } else {
             return response()->json('Something went wrong on the server.', 400);
         }
@@ -250,7 +263,7 @@ class CyclingClubController extends Controller
             return response()->json($error, 400);
         }
         if ($user->cyclingClubMember()->detach($cyclingClub) === 1) {
-            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get(), 202);
+            return response()->json(new ResourcesUser($user), 202);
 
         } else {
             return response()->json('Something went wrong on the server.', 400);

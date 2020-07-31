@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\User as ResourcesUser;
 use App\User;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -11,7 +11,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         if ($user->userProfile && $user) {
-            return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get());
+            return response()->json(new ResourcesUser($user));
         } else {
             return response()->json(User::where('id', $user->id)->with('userProfile')->get());
         }

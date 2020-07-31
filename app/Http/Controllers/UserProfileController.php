@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\User as ResourcesUser;
 use App\User;
 use App\UserProfile;
 use Illuminate\Http\Request;
@@ -60,7 +61,7 @@ class UserProfileController extends Controller
             }
             $userProfileSave = $userProfile->save();
             if ($userProfileSave) {
-                return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get(), 202);
+                return response()->json(new ResourcesUser($user), 202);
             } else {
                 return response()->json('Something went wrong on the server.', 400);
             }
