@@ -88,8 +88,8 @@ class ClubEventController extends Controller
             return response()->json($error, 400);
         }
         // Store Event Picture
-        if ($request->event_picture) {
-            $event_picture = $this->saveEventPicture($request->event_picture, auth()->user()->id, $request->event_name);
+        if ($request->profile_picture) {
+            $profile_picture = $this->saveEventPicture($request->profile_picture, auth()->user()->id, $request->event_name);
         }
         // Use searchMaps to get location data
         $mapsQuery = (object) array(
@@ -113,7 +113,7 @@ class ClubEventController extends Controller
             'country_short' => $mapResult ? $mapResult->Address->Country : null,
             'lat' => $mapResult ? $mapResult->NavigationPosition[0]->Latitude : null,
             'lng' => $mapResult ? $mapResult->NavigationPosition[0]->Longitude : null,
-            'event_picture' => $event_picture ? $event_picture : null,
+            'profile_picture' => $profile_picture ? $profile_picture : null,
         ]);
         // Add Admin as an attendee to the event.
         $user->clubEventAttendee()->attach($clubEvent);
@@ -173,12 +173,12 @@ class ClubEventController extends Controller
             return response()->json($error, 400);
         }
         // Store Event Picture
-        if ($request->event_picture) {
-            $event_picture = $this->saveEventPicture($request->event_picture, auth()->user()->id, $request->event_name);
+        if ($request->profile_picture) {
+            $profile_picture = $this->saveEventPicture($request->profile_picture, auth()->user()->id, $request->event_name);
         }
         foreach ($request->request as $key => $value) {
-            if ($key === 'event_picture') {
-                $value = $event_picture;
+            if ($key === 'profile_picture') {
+                $value = $profile_picture;
             }
             if ($key == 'start_address' or $key == 'city') {
                 $refreshLatLng = true;
