@@ -17,7 +17,7 @@ class ClubEvent extends Migration
             $table->id();
             $table->unsignedBigInteger('club_id');
             $table->unsignedBigInteger('admin_id');
-            $table->string('event_name')->unique();
+            $table->string('event_name');
             $table->string('description')->nullable();
             $table->date('event_date');
             $table->time('start_time', 0);
@@ -28,7 +28,7 @@ class ClubEvent extends Migration
             $table->string('country_short');
             $table->string('lat')->nullable();
             $table->string('lng')->nullable();
-            $table->string('event_picture')->nullable();
+            $table->string('profile_picture')->nullable();
             $table->timestamps();
 
             $table->foreign('club_id')->references('id')->on('cycling_club')->onDelete('cascade');
