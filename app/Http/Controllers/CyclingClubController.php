@@ -74,6 +74,7 @@ class CyclingClubController extends Controller
             return response()->json($error, 400);
         }
 
+        $profilePicture = false;
         // Store Profile Picture if present on request.
         if ($request->profile_picture) {
             $profilePicture = $this->saveProfilePicture($request->profile_picture, auth()->user()->id, $request->club_name);
