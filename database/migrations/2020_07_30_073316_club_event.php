@@ -15,10 +15,11 @@ class ClubEvent extends Migration
     {
         Schema::create('club_event', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('club_id');
+            $table->unsignedBigInteger('cycling_club_id');
             $table->unsignedBigInteger('admin_id');
             $table->string('event_name');
             $table->string('description')->nullable();
+            $table->string('difficulty')->nullable();
             $table->date('event_date');
             $table->time('start_time', 0);
             $table->string('start_address');
@@ -29,6 +30,8 @@ class ClubEvent extends Migration
             $table->string('lat')->nullable();
             $table->string('lng')->nullable();
             $table->string('profile_picture')->nullable();
+            $table->longText('elevation_array')->nullable();
+            $table->longText('map_array')->nullable();
             $table->timestamps();
 
             $table->foreign('club_id')->references('id')->on('cycling_club')->onDelete('cascade');

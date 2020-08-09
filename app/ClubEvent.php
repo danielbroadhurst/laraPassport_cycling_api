@@ -17,7 +17,7 @@ class ClubEvent extends Model
      * @var array
      */
     protected $fillable = [
-        'admin_id', 'cycling_club_id', 'event_name', 'description', 'event_date', 'start_time', 'start_address', 'city', 'county', 'country', 'country_short', 'lat', 'lng', 'profile_picture'
+        'distance','elevation_array','map_array', 'admin_id', 'cycling_club_id', 'event_name', 'description', 'difficulty', 'event_date', 'start_time', 'start_address', 'city', 'county', 'country', 'country_short', 'lat', 'lng', 'profile_picture'
     ];
 
     /**
