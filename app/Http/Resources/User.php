@@ -16,16 +16,26 @@ class User extends JsonResource
      */
     public function toArray($request)
     {
+        //dd(AppUser::whereId($this->id)->with('clubEventAttendee')->first()->clubEventAttendee->pluck('cycling_club_id', 'id'));
         return [
             'id' => $this->id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'email' => $this->email,
             'user_profile' => $this->userProfile,
-            'cycling_club_admin' => $this->when(sizeof(CyclingClub::collection($this->cyclingClubAdmin)) > 0, CyclingClub::collection($this->cyclingClubAdmin)),
-            'cycling_club_member' => $this->when(sizeof(CyclingClub::collection($this->cyclingClubMember)) > 0, CyclingClub::collection($this->cyclingClubMember)),
-            'event_attendee' => $this->when(sizeof(AppUser::whereId($this->id)->with('clubEventAttendee')->first()->clubEventAttendee) > 0, function() {
-                return AppUser::whereId($this->id)->with('clubEventAttendee')->first()->clubEventAttendee;
+            'cycling_club_admin' => $this->when(CyclingClub::collection($this->cyclingClubAdmin)->isNotEmpty(), CyclingClub::collection($this->cyclingClubAdmin)),
+            'cycling_club_member' => $this->when(CyclingClub::collection($this->cyclingClubMember)->isNotEmpty(), CyclingClub::collection($this->cyclingClubMember)),
+            'event_attendee' => $this->when(AppUser::whereId($this->id)->with('clubEventAttendee')->first()->clubEventAttendee->isNotEmpty(), function() {
+                $events = AppUser::whereId($this->id)->with('clubEventAttendee')->first()->clubEventAttendee->pluck('cycling_club_id', 'id');
+                $returnArray = array();
+                foreach ($events as $key => $value) {
+                    $tempArray = array(
+                        'cycling_club_id' => $value,
+                        'event_id' => $key
+                    );
+                    array_push($returnArray, $tempArray);
+                }
+                return $returnArray;
             }),
         ];
     }
