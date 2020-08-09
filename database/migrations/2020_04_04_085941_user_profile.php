@@ -28,7 +28,7 @@ class UserProfile extends Migration
             $table->boolean('is_admin')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');;
         });
     }
 
