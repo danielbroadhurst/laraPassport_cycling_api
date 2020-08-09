@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\User;
+use App\Http\Resources\User as ResourcesUser;
 
 class AuthController extends Controller
 {
@@ -49,7 +50,7 @@ class AuthController extends Controller
         ]);
 
         if ($user) {
-            return response()->json($user, 201);
+            return response()->json(new ResourcesUser($user), 201);
         } else {
             return response()->json('Something went wrong on the server.', 400);
         }

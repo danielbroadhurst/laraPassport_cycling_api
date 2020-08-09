@@ -23,7 +23,7 @@ class UserProfileController extends Controller
             'date_of_birth' => 'required|date',
             'country' => 'required|string|max:255',
         ]);
-
+        // Create Profile if new User else update profile.
         if ($user->userProfile === null) {
             if ($request->profile_picture) {
                 $profilePicture = $this->saveProfilePicture($request->profile_picture, $user->id, $user->email);
@@ -43,7 +43,8 @@ class UserProfileController extends Controller
             ]);
 
             if ($profile) {
-                return response()->json(User::where('id', $user->id)->with('userProfile')->with('cyclingClubAdmin')->with('cyclingClubMember')->get(), 201);
+                $user = User::where('id', $user->id)->first();
+                return response()->json(new ResourcesUser($user), 201);
             } else {
                 return response()->json('Something went wrong on the server.', 400);
             }
@@ -66,17 +67,6 @@ class UserProfileController extends Controller
                 return response()->json('Something went wrong on the server.', 400);
             }
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\UserProfile  $userProfile
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(UserProfile $userProfile)
-    {
-        //
     }
 
     public function saveProfilePicture($picture, $id)

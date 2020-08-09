@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\ClubEvent;
 use App\CyclingClub;
 use App\Helpers\Maps;
+use App\Http\Resources\ClubEvent as ResourcesClubEvent;
 use App\Http\Resources\User as ResourcesUser;
 use App\User;
 use Illuminate\Http\Request;
@@ -87,6 +88,7 @@ class ClubEventController extends Controller
             );
             return response()->json($error, 400);
         }
+        $profile_picture = null;
         // Store Event Picture
         if ($request->profile_picture) {
             $profile_picture = $this->saveEventPicture($request->profile_picture, auth()->user()->id, $request->event_name);
@@ -104,6 +106,7 @@ class ClubEventController extends Controller
             'admin_id' => $user->id,
             'event_name' => $request->event_name,
             'description' => $request->description,
+            'difficulty' => $request->difficulty,
             'event_date' => $request->event_date,
             'start_time' => $request->start_time,
             'start_address' => $request->start_address,
@@ -114,6 +117,8 @@ class ClubEventController extends Controller
             'lat' => $mapResult ? $mapResult->NavigationPosition[0]->Latitude : null,
             'lng' => $mapResult ? $mapResult->NavigationPosition[0]->Longitude : null,
             'profile_picture' => $profile_picture ? $profile_picture : null,
+            'map_array' => $request->map_array ? $request->map_array : null,
+            'elevation_array' => $request->elevation_array ? $request->elevation_array : null,
         ]);
         // Add Admin as an attendee to the event.
         $user->clubEventAttendee()->attach($clubEvent);
@@ -133,9 +138,7 @@ class ClubEventController extends Controller
      */
     public function show($id)
     {
-        $clubEvent = ClubEvent::where('id', $id)->with('cyclingClub')->with(array('attendees' => function($query){
-            $query->select('id', 'first_name', 'last_name');
-        }))->get();
+        $clubEvent = ClubEvent::where('id', $id)->get();
         if (sizeof($clubEvent) === 0) {
             $errorMessage = 'Club Event not found.';
             $error = array(
@@ -143,7 +146,7 @@ class ClubEventController extends Controller
             );
             return response()->json($error, 400);
         }
-        return response()->json($clubEvent);        
+        return response()->json(new ResourcesClubEvent($clubEvent[0]));        
     }
 
     /**
