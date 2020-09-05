@@ -15,7 +15,6 @@ class CyclingClub extends JsonResource
      */
     public function toArray($request)
     {
-        //dd($this->cyclingClubEvent->where('event_date', '>=', date('Y-m-d'))->toArray());
         $admin = AppUser::where('id', $this->user_id)->first();
         return [
             'id' => $this->id,
